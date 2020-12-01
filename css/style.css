@@ -1276,9 +1276,9 @@ body {
 
   .front-page-my-photo {
     position: absolute;
-    width: 256px;
+    width: 50%;
     z-index: 1;
-    right: -125px;
+    right: -90px;
     bottom: 330px;
   }
 

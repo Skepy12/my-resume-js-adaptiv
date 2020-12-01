@@ -1,61 +1,96 @@
-const callbackForm = document.querySelector('.callback-form-container');
-const requestReceivedModal = document.querySelector('#request-received');
+const phoneInput = document.querySelector('#callback-form-tel-input');
+const nameInput = document.querySelector('#callback-form-name-input');
+const emailInput = document.querySelector('#callback-form-email-input');
 
-const userName = document.querySelector('#callback-form-input-name');
-const userEmail = document.querySelector('#callback-form-input-email');
-const userPhone = document.querySelector('#callback-form-input-phone');
+const callBackForm = document.querySelector('#callback-form');
+const requestRecievedModal = document.querySelector('#request-received');
 
-userPhone.addEventListener('click', function() {
-    if (!userPhone.value.trim()) {
-        userPhone.value = '+380';
-    }
-});
+const DEFAULT_PHONE = '+380';
 
-userPhone.addEventListener('blur', function() {
-    if (userPhone.value === '+380') {
-        userPhone.value = '';
-    }
-});
-
-callbackForm.addEventListener('submit', function(event){
+callBackForm.addEventListener('submit', function(event) {
     event.preventDefault();
-    let hasError = false;
+    let oneFieldNotValid = false;
 
-    if (!userName.value.trim()) {
-        userName.classList.add('callback-form-input-error');
-        hasError = true;
-    } else {
-        userName.classList.remove('callback-form-input-error');
+    if (!isPhoneValid(phoneInput.value.trim())) {
+        phoneInput.classList.add('input-error-border');
+        oneFieldNotValid = true;
     }
 
-    if (!userEmail.value.trim() || !isEmailValid(userEmail.value)) {
-        userEmail.classList.add('callback-form-input-error');
-        hasError = true;
-    } else {
-        userEmail.classList.remove('callback-form-input-error');
+    if (!isEmailValid(emailInput.value.trim())) {
+        emailInput.classList.add('input-error-border');
+        oneFieldNotValid = true;
     }
 
-    if (!userPhone.value.trim() || !isPhoneValid(userPhone.value)) {
-        userPhone.classList.add('callback-form-input-error');
-        hasError = true;
-    } else {
-        userPhone.classList.remove('callback-form-input-error');
+    if (!nameInput.value.trim()) {
+        nameInput.classList.add('input-error-border');
+        oneFieldNotValid = true;
     }
 
-    if (hasError) {
+    if (oneFieldNotValid) {
         return;
     }
 
-    userName.value = '';
-    userEmail.value = '';
-    userPhone.value = '';
+    requestRecievedModal.classList.add('modal-active');
+    phoneInput.value = '';
+    emailInput.value = '';
+    nameInput.value = '';
+})
 
-    requestReceivedModal.classList.add('modal-active');
+phoneInput.addEventListener('click', function(event){
+    const element = event.target; 
 
-    setTimeout(function() {
-        requestReceivedModal.classList.remove('modal-active');
-    }, 2000);
+    if (!element.value || !element.value.trim()) {
+        element.value = DEFAULT_PHONE;
+    }
 });
+
+phoneInput.addEventListener('blur', function(event){
+    const element = event.target; 
+
+    if (element.value.trim() === DEFAULT_PHONE) {
+        element.classList.add('input-error-border');
+        return;
+    }
+
+    element.classList.remove('input-error-border');
+});
+
+
+phoneInput.addEventListener('change', function(event){
+    const element = event.target; 
+
+    if (!isPhoneValid(element.value.trim())) {
+        element.classList.add('input-error-border');
+        return;
+    }
+
+    element.classList.remove('input-error-border');
+
+})
+
+emailInput.addEventListener('change', function(event){
+    const element = event.target; 
+
+    if (!isEmailValid(element.value.trim())) {
+        element.classList.add('input-error-border');
+        return;
+    }
+
+    element.classList.remove('input-error-border');
+
+})
+
+nameInput.addEventListener('change', function(event){
+    const element = event.target; 
+
+    if (!element.value.trim()) {
+        element.classList.add('input-error-border');
+        return;
+    }
+
+    element.classList.remove('input-error-border');
+})
+
 
 function isPhoneValid(phone = '') {
     const regexp = /(\+38)?\(?\d{3}\)?[\s\.-]?(\d{7}|\d{3}[\s\.-]\d{2}[\s\.-]\d{2}|\d{3}-\d{4})/;
